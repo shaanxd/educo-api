@@ -7,10 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
@@ -33,5 +30,16 @@ public class QuestionController {
         }
         Question createdQuestion = questionService.createQuestion(question);
         return new ResponseEntity<>(createdQuestion, HttpStatus.CREATED);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getQuestionById(@PathVariable String id) {
+        Question question = questionService.getQuestion(id);
+        return new ResponseEntity<>(question, HttpStatus.OK);
+    }
+
+    @GetMapping("/")
+    public ResponseEntity<?> getQuestions() {
+        return new ResponseEntity<>(questionService.getQuestions(), HttpStatus.OK);
     }
 }

@@ -4,12 +4,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import java.util.Date;
 
@@ -19,15 +17,19 @@ import java.util.Date;
 @Setter
 public class Question {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(generator = "UUID")
+    @GenericGenerator(name="UUID", strategy = "org.hibernate.id.UUIDGenerator")
+    @Column(name="id", updatable = false, nullable = false)
+    private String id;
     @NotBlank(message = "Question title is required.")
     private String title;
     @NotBlank(message = "Question description is required")
     private String description;
 
     @CreationTimestamp
+    @Transient
     private Date createdAt;
+    @Transient
     @UpdateTimestamp
     private Date updatedAt;
 }

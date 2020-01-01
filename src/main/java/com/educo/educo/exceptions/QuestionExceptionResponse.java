@@ -1,0 +1,12 @@
+package com.educo.educo.exceptions;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
+
+@AllArgsConstructor
+@Getter
+@Setter
+class QuestionExceptionResponse {
+    private String message;
+}
