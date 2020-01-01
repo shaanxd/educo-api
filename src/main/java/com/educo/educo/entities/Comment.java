@@ -1,5 +1,8 @@
 package com.educo.educo.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.google.gson.annotations.Expose;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -9,26 +12,37 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-@Entity
-@NoArgsConstructor
 @Getter
 @Setter
-public class Question {
+@NoArgsConstructor
+@Entity
+public class Comment {
     @Id
     @GeneratedValue(generator = "UUID")
     @GenericGenerator(name="UUID", strategy = "org.hibernate.id.UUIDGenerator")
     @Column(name="id", updatable = false, nullable = false)
     private String id;
-    @NotBlank(message = "Question title is required.")
-    private String title;
-    @NotBlank(message = "Question description is required")
-    private String description;
+    @NotBlank(message = "Comment is required.")
+    private String comment;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "question")
-    private List<Comment> commentList;
+    private int voteCount;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name="question_id")
+    @JsonIgnore
+    private Question question;
+
+    @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL)
+    private List<Comment> childComments = new ArrayList<>();
+
+    @ManyToOne
+    @JoinColumn(referencedColumnName = "id")
+    @JsonIgnore
+    private Comment parent;
 
     @CreationTimestamp
     @Transient
