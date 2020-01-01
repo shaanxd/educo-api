@@ -1,5 +1,6 @@
 package com.educo.educo.controllers;
 
+import com.educo.educo.DTO.Request.QuestionRequest;
 import com.educo.educo.entities.Question;
 import com.educo.educo.services.QuestionService;
 import com.educo.educo.services.ValidationService;
@@ -24,11 +25,11 @@ public class QuestionController {
     }
 
     @PostMapping("")
-    public ResponseEntity<?> createQuestion(@Valid @RequestBody Question question, BindingResult result) {
+    public ResponseEntity<?> createQuestion(@Valid @RequestBody QuestionRequest questionRequest, BindingResult result) {
         if(result.hasErrors()) {
             return validationService.validate(result);
         }
-        Question createdQuestion = questionService.createQuestion(question);
+        Question createdQuestion = questionService.createQuestion(questionRequest.transformToEntity());
         return new ResponseEntity<>(createdQuestion, HttpStatus.CREATED);
     }
 

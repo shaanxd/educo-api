@@ -12,7 +12,7 @@ import javax.validation.constraints.NotBlank;
 @NoArgsConstructor
 @Getter
 @Setter
-public class CommentRequestDTO {
+public class CommentRequest {
     @NotBlank(message = "Comment should belong to a question")
     private String questionId;
     @NotBlank(message = "Comment text is required")
@@ -20,9 +20,7 @@ public class CommentRequestDTO {
 
     private String parentId;
 
-    public static Comment transformToEntity(CommentRequestDTO commentRequestDTO) {
-        Comment comment = new Comment();
-        comment.setComment(commentRequestDTO.getComment());
-        return comment;
+    public Comment transformToEntity() {
+        return new Comment(this.comment);
     }
 }

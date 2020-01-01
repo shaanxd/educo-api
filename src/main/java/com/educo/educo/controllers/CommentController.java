@@ -1,6 +1,6 @@
 package com.educo.educo.controllers;
 
-import com.educo.educo.DTO.Request.CommentRequestDTO;
+import com.educo.educo.DTO.Request.CommentRequest;
 import com.educo.educo.entities.Comment;
 import com.educo.educo.services.CommentService;
 import com.educo.educo.services.ValidationService;
@@ -25,12 +25,12 @@ public class CommentController {
     }
 
     @PostMapping("/create-comment")
-    public ResponseEntity<?> createComment(@Valid @RequestBody CommentRequestDTO comment, BindingResult result) {
+    public ResponseEntity<?> createComment(@Valid @RequestBody CommentRequest comment, BindingResult result) {
         if (result.hasErrors()) {
             return validationService.validate(result);
         }
         Comment newComment;
-        Comment transformedComment = CommentRequestDTO.transformToEntity(comment);
+        Comment transformedComment = comment.transformToEntity();
 
         if (comment.getParentId() != null) {
             newComment = commentService.createChildComment(comment.getQuestionId(), comment.getParentId(), transformedComment);
@@ -42,11 +42,11 @@ public class CommentController {
 
     @PostMapping("/upvote/{id}")
     public ResponseEntity<?> upvoteComment(@PathVariable String id) {
-        return new ResponseEntity<>(commentService.upvoteComment(id), HttpStatus.OK);
+        return new ResponseEntity<>(commentService.voteComment(id, true), HttpStatus.OK);
     }
 
     @PostMapping("/downvote/{id}")
     public ResponseEntity<?> downvoteComment(@PathVariable String id) {
-        return new ResponseEntity<>(commentService.downvoteComment(id), HttpStatus.OK);
+        return new ResponseEntity<>(commentService.voteComment(id, false), HttpStatus.OK);
     }
 }

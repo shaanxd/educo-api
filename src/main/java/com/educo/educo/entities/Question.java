@@ -22,9 +22,9 @@ public class Question {
     @GenericGenerator(name="UUID", strategy = "org.hibernate.id.UUIDGenerator")
     @Column(name="id", updatable = false, nullable = false)
     private String id;
-    @NotBlank(message = "Question title is required.")
+
     private String title;
-    @NotBlank(message = "Question description is required")
+
     private String description;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "question")
@@ -36,4 +36,9 @@ public class Question {
     @Transient
     @UpdateTimestamp
     private Date updatedAt;
+
+    public Question(String title, String description) {
+        this.title = title;
+        this.description = description;
+    }
 }

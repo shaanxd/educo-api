@@ -29,8 +29,6 @@ public class Comment {
     @NotBlank(message = "Comment is required.")
     private String comment;
 
-    private int voteCount;
-
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="question_id")
     @JsonIgnore
@@ -44,10 +42,17 @@ public class Comment {
     @JsonIgnore
     private Comment parent;
 
+    @OneToMany(mappedBy = "comment", cascade = CascadeType.ALL)
+    private List<Vote> votes = new ArrayList<>();
+
     @CreationTimestamp
     @Transient
     private Date createdAt;
     @Transient
     @UpdateTimestamp
     private Date updatedAt;
+
+    public Comment(String comment) {
+        this.comment = comment;
+    }
 }
