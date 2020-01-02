@@ -30,7 +30,6 @@ public class CustomResponseEntityExceptionHandler extends ResponseEntityExceptio
             break;
             case PASSWORD: exceptionResponse.setPassword(exceptionMessage);
             break;
-            case CONFIRM_PASSWORD: exceptionResponse.setConfirmPassword(exceptionMessage);
         }
         return new ResponseEntity<>(exceptionResponse, HttpStatus.BAD_REQUEST);
     }

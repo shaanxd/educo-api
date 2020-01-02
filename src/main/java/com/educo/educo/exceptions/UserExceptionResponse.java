@@ -12,5 +12,4 @@ import lombok.Setter;
 class UserExceptionResponse {
     private String email;
     private String password;
-    private String confirmPassword;
 }

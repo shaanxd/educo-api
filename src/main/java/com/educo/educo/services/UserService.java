@@ -26,10 +26,6 @@ public class UserService {
         if(foundEmailUser != null) {
             throw new UserException(UserExceptionTypes.EMAIL, "Email already exists.");
         }
-        // Check whether password and confirmPassword match
-        if(!user.comparePasswords()) {
-            throw new UserException(UserExceptionTypes.CONFIRM_PASSWORD, "Passwords do not match");
-        }
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         return userRepository.save(user);
     }

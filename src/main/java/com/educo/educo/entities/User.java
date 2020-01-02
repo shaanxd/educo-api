@@ -59,12 +59,6 @@ public class User implements UserDetails {
     @UpdateTimestamp
     private Date updatedAt;
 
-    /* Compare password to confirmPassword to validate */
-
-    public boolean comparePasswords() {
-        return this.password.equals(this.confirmPassword);
-    }
-
     /* UserDetails interface methods */
 
     @Override
