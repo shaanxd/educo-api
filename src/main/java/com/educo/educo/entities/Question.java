@@ -1,5 +1,6 @@
 package com.educo.educo.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -31,9 +32,10 @@ public class Question {
     private List<Comment> commentList;
 
     @CreationTimestamp
-    @Transient
+    @JsonIgnore
     private Date createdAt;
-    @Transient
+
+    @JsonIgnore
     @UpdateTimestamp
     private Date updatedAt;
 

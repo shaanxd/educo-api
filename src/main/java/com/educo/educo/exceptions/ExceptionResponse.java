@@ -7,6 +7,6 @@ import lombok.Setter;
 @AllArgsConstructor
 @Getter
 @Setter
-class ExceptionResponse {
+public class ExceptionResponse {
     private String message;
 }

@@ -46,9 +46,10 @@ public class Comment {
     private List<Vote> votes = new ArrayList<>();
 
     @CreationTimestamp
-    @Transient
+    @JsonIgnore
     private Date createdAt;
-    @Transient
+
+    @JsonIgnore
     @UpdateTimestamp
     private Date updatedAt;
 

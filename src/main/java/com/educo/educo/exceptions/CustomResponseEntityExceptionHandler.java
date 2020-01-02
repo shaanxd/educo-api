@@ -20,4 +20,18 @@ public class CustomResponseEntityExceptionHandler extends ResponseEntityExceptio
     public final ResponseEntity<Object> handleCommentException(CommentException ex, WebRequest request) {
         return new ResponseEntity<>(new ExceptionResponse(ex.getMessage()), HttpStatus.NOT_FOUND);
     }
+
+    @ExceptionHandler
+    public final ResponseEntity<Object> handleUserException(UserException ex, WebRequest request) {
+        UserExceptionResponse exceptionResponse = new UserExceptionResponse();
+        String exceptionMessage = ex.getMessage();
+        switch(ex.getType()) {
+            case EMAIL:exceptionResponse.setEmail(exceptionMessage);
+            break;
+            case PASSWORD: exceptionResponse.setPassword(exceptionMessage);
+            break;
+            case CONFIRM_PASSWORD: exceptionResponse.setConfirmPassword(exceptionMessage);
+        }
+        return new ResponseEntity<>(exceptionResponse, HttpStatus.BAD_REQUEST);
+    }
 }
