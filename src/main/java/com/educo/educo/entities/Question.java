@@ -29,7 +29,7 @@ public class Question {
     private String description;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "question")
-    private List<Comment> commentList;
+    private List<Comment> comments;
 
     @CreationTimestamp
     @JsonIgnore
@@ -38,6 +38,10 @@ public class Question {
     @JsonIgnore
     @UpdateTimestamp
     private Date updatedAt;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "owner_id")
+    private User owner;
 
     public Question(String title, String description) {
         this.title = title;

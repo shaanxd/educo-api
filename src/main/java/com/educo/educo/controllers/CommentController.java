@@ -7,6 +7,7 @@ import com.educo.educo.services.ValidationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,7 +26,7 @@ public class CommentController {
     }
 
     @PostMapping("/create-comment")
-    public ResponseEntity<?> createComment(@Valid @RequestBody CommentRequest comment, BindingResult result) {
+    public ResponseEntity<?> createComment(@Valid @RequestBody CommentRequest comment, BindingResult result, Authentication authentication) {
         if (result.hasErrors()) {
             return validationService.validate(result);
         }
@@ -33,20 +34,20 @@ public class CommentController {
         Comment transformedComment = comment.transformToEntity();
 
         if (comment.getParentId() != null) {
-            newComment = commentService.createChildComment(comment.getQuestionId(), comment.getParentId(), transformedComment);
+            newComment = commentService.createChildComment(comment.getQuestionId(), comment.getParentId(), transformedComment, authentication.getName());
         } else {
-            newComment = commentService.createComment(comment.getQuestionId(), transformedComment);
+            newComment = commentService.createComment(comment.getQuestionId(), transformedComment, authentication.getName());
         }
         return new ResponseEntity<>(newComment, HttpStatus.OK);
     }
 
     @PostMapping("/upvote/{id}")
-    public ResponseEntity<?> upvoteComment(@PathVariable String id) {
-        return new ResponseEntity<>(commentService.voteComment(id, true), HttpStatus.OK);
+    public ResponseEntity<?> upvoteComment(@PathVariable String id, Authentication authentication) {
+        return new ResponseEntity<>(commentService.voteComment(id, true, authentication.getName()), HttpStatus.OK);
     }
 
     @PostMapping("/downvote/{id}")
-    public ResponseEntity<?> downvoteComment(@PathVariable String id) {
-        return new ResponseEntity<>(commentService.voteComment(id, false), HttpStatus.OK);
+    public ResponseEntity<?> downvoteComment(@PathVariable String id, Authentication authentication) {
+        return new ResponseEntity<>(commentService.voteComment(id, false, authentication.getName()), HttpStatus.OK);
     }
 }

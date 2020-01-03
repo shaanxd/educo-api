@@ -7,6 +7,7 @@ import com.educo.educo.services.ValidationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,8 +16,8 @@ import javax.validation.Valid;
 @RestController
 @RequestMapping("/api/question")
 public class QuestionController {
-    private final QuestionService questionService;
-    private final ValidationService validationService;
+    private QuestionService questionService;
+    private ValidationService validationService;
 
     @Autowired
     public QuestionController(QuestionService questionService, ValidationService validationService) {
@@ -25,11 +26,11 @@ public class QuestionController {
     }
 
     @PostMapping("")
-    public ResponseEntity<?> createQuestion(@Valid @RequestBody QuestionRequest questionRequest, BindingResult result) {
+    public ResponseEntity<?> createQuestion(@Valid @RequestBody QuestionRequest questionRequest, BindingResult result, Authentication authentication) {
         if(result.hasErrors()) {
             return validationService.validate(result);
         }
-        Question createdQuestion = questionService.createQuestion(questionRequest.transformToEntity());
+        Question createdQuestion = questionService.createQuestion(questionRequest.transformToEntity(), authentication.getName());
         return new ResponseEntity<>(createdQuestion, HttpStatus.CREATED);
     }
 

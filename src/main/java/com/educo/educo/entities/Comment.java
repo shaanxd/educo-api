@@ -1,8 +1,6 @@
 package com.educo.educo.entities;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.google.gson.annotations.Expose;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -35,7 +33,7 @@ public class Comment {
     private Question question;
 
     @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL)
-    private List<Comment> childComments = new ArrayList<>();
+    private List<Comment> children = new ArrayList<>();
 
     @ManyToOne
     @JoinColumn(referencedColumnName = "id")
@@ -44,6 +42,10 @@ public class Comment {
 
     @OneToMany(mappedBy = "comment", cascade = CascadeType.ALL)
     private List<Vote> votes = new ArrayList<>();
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "owner_id")
+    private User owner;
 
     @CreationTimestamp
     @JsonIgnore

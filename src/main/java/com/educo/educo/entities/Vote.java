@@ -29,6 +29,10 @@ public class Vote {
 
     private boolean vote;
 
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "owner_id")
+    private User owner;
+
     @CreationTimestamp
     @JsonIgnore
     private Date createdAt;
