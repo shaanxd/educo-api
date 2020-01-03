@@ -1,6 +1,6 @@
 package com.educo.educo.security;
 
-import com.educo.educo.exceptions.ExceptionResponse;
+import com.educo.educo.exceptions.GenericExceptionResponse;
 import com.google.gson.Gson;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
@@ -14,7 +14,7 @@ import java.io.IOException;
 public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
     @Override
     public void commence(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, AuthenticationException e) throws IOException {
-        ExceptionResponse exceptionResponse = new ExceptionResponse("Unauthorized");
+        GenericExceptionResponse exceptionResponse = new GenericExceptionResponse("Unauthorized");
         String jsonExceptionResponse = new Gson().toJson(exceptionResponse);
 
         httpServletResponse.setContentType("application/json");

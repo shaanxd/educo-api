@@ -2,10 +2,11 @@ package com.educo.educo.services;
 
 import com.educo.educo.entities.Question;
 import com.educo.educo.entities.User;
-import com.educo.educo.exceptions.QuestionException;
+import com.educo.educo.exceptions.GenericException;
 import com.educo.educo.repositories.QuestionRepository;
 import com.educo.educo.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -21,6 +22,9 @@ public class QuestionService {
 
     public Question createQuestion(Question question, String userId) {
         User user = userRepository.findById(userId).orElse(null);
+        if (user == null) {
+            throw new GenericException("User not found", HttpStatus.NOT_FOUND);
+        }
         question.setOwner(user);
         return questionRepository.save(question);
     }
@@ -28,7 +32,7 @@ public class QuestionService {
     public Question getQuestion(String questionId) {
         Question question = questionRepository.findById(questionId).orElse(null);
         if (question == null) {
-            throw new QuestionException("Question not found");
+            throw new GenericException("Question not found", HttpStatus.NOT_FOUND);
         }
         return question;
     }

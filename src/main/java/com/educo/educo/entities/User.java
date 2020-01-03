@@ -1,7 +1,6 @@
 package com.educo.educo.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreType;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,9 +9,9 @@ import org.hibernate.annotations.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import javax.persistence.*;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import java.util.ArrayList;

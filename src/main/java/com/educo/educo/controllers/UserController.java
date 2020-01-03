@@ -22,7 +22,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 
-import static com.educo.educo.security.SecurityConstants.TOKEN_PREFIX;
 import static com.educo.educo.security.SecurityConstants.VALID_DURATION;
 
 @RestController

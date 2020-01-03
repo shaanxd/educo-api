@@ -4,13 +4,13 @@ import com.educo.educo.entities.Comment;
 import com.educo.educo.entities.Question;
 import com.educo.educo.entities.User;
 import com.educo.educo.entities.Vote;
-import com.educo.educo.exceptions.CommentException;
-import com.educo.educo.exceptions.QuestionException;
+import com.educo.educo.exceptions.GenericException;
 import com.educo.educo.repositories.CommentRepository;
 import com.educo.educo.repositories.QuestionRepository;
 import com.educo.educo.repositories.UserRepository;
 import com.educo.educo.repositories.VoteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -32,12 +32,12 @@ public class CommentService {
         Question question = questionRepository.findById(questionID).orElse(null);
 
         if (question == null) {
-            throw new QuestionException("Question not found.");
+            throw new GenericException("Question not found.", HttpStatus.NOT_FOUND);
         }
 
         User user = userRepository.findById(userId).orElse(null);
         if (user == null) {
-            throw new QuestionException("User not found.");
+            throw new GenericException("User not found.", HttpStatus.NOT_FOUND);
         }
 
         comment.setQuestion(question);
@@ -48,17 +48,17 @@ public class CommentService {
     public Comment createChildComment(String questionId, String parentId, Comment comment, String userId) {
         Comment parent = commentRepository.findById(parentId).orElse(null);
         if (parent == null) {
-            throw new CommentException("Comment not found.");
+            throw new GenericException("Comment not found.", HttpStatus.NOT_FOUND);
         }
 
         User user = userRepository.findById(userId).orElse(null);
         if (user == null) {
-            throw new QuestionException("User not found.");
+            throw new GenericException("User not found.", HttpStatus.NOT_FOUND);
         }
 
         Question question = questionRepository.findById(questionId).orElse(null);
         if (question == null) {
-            throw new QuestionException("Question not found.");
+            throw new GenericException("Question not found.", HttpStatus.NOT_FOUND);
         }
 
         comment.setOwner(user);
@@ -70,12 +70,12 @@ public class CommentService {
     public Vote voteComment(String commentId, Boolean value, String userId) {
         User user = userRepository.findById(userId).orElse(null);
         if(user == null) {
-            throw new QuestionException("User not found.");
+            throw new GenericException("User not found.", HttpStatus.NOT_FOUND);
         }
 
         Comment comment = commentRepository.findById(commentId).orElse(null);
         if (comment == null) {
-            throw new CommentException("Comment not found.");
+            throw new GenericException("Comment not found.", HttpStatus.NOT_FOUND);
         }
 
         Vote vote = voteRepository.findByCommentAndOwner(comment, user);
