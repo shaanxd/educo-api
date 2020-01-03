@@ -13,6 +13,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import static com.educo.educo.security.SecurityConstants.AUTH_URLS;
 
@@ -28,12 +29,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private JwtAuthenticationEntryPoint entryPoint;
     private CustomUserDetailsService userDetailsService;
     private BCryptPasswordEncoder passwordEncoder;
+    private JwtAuthenticationFilter authenticationFilter;
 
     @Autowired
-    public SecurityConfig(JwtAuthenticationEntryPoint entryPoint, CustomUserDetailsService userDetailsService, BCryptPasswordEncoder passwordEncoder) {
+    public SecurityConfig(JwtAuthenticationEntryPoint entryPoint, CustomUserDetailsService userDetailsService, BCryptPasswordEncoder passwordEncoder, JwtAuthenticationFilter authenticationFilter) {
         this.entryPoint = entryPoint;
         this.userDetailsService = userDetailsService;
         this.passwordEncoder = passwordEncoder;
+        this.authenticationFilter = authenticationFilter;
     }
 
     @Override
@@ -59,5 +62,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         AUTH_URLS
                 ).permitAll()
                 .anyRequest().authenticated();
+
+        http.addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class);
     }
 }

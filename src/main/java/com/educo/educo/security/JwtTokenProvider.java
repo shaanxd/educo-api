@@ -1,9 +1,7 @@
 package com.educo.educo.security;
 
 import com.educo.educo.entities.User;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
-import org.springframework.security.core.Authentication;
+import io.jsonwebtoken.*;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
@@ -31,5 +29,29 @@ public class JwtTokenProvider {
                 .setExpiration(expiryDate)
                 .signWith(SignatureAlgorithm.HS512, JWT_SECRET)
                 .compact();
+    }
+
+    boolean validateToken(String token) {
+        try {
+            Jwts.parser().setSigningKey(JWT_SECRET).parseClaimsJws(token);
+            return true;
+        } catch (SignatureException ex) {
+            System.out.println("Invalid JWT Signature");
+        } catch (MalformedJwtException ex) {
+            System.out.println("JWT Token is altered.");
+        } catch (ExpiredJwtException ex) {
+            System.out.println("Token has expired.");
+        } catch (UnsupportedJwtException ex) {
+            System.out.println("Unsupported JWT Token");
+        } catch (IllegalArgumentException ex) {
+            System.out.println("JWT claims string is empty.");
+        }
+        return false;
+    }
+
+    String extractUserFromToken(String token) {
+        Claims claims = Jwts.parser().setSigningKey(JWT_SECRET).parseClaimsJws(token).getBody();
+
+        return (String) claims.get("id");
     }
 }
