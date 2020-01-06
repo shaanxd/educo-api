@@ -1,5 +1,6 @@
 package com.educo.educo.security;
 
+import com.educo.educo.exceptions.CustomAccessDeniedHandler;
 import com.educo.educo.services.CustomUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -30,13 +31,18 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private CustomUserDetailsService userDetailsService;
     private BCryptPasswordEncoder passwordEncoder;
     private JwtAuthenticationFilter authenticationFilter;
+    private CustomAccessDeniedHandler accessDeniedHandler;
 
     @Autowired
-    public SecurityConfig(JwtAuthenticationEntryPoint entryPoint, CustomUserDetailsService userDetailsService, BCryptPasswordEncoder passwordEncoder, JwtAuthenticationFilter authenticationFilter) {
+    public SecurityConfig(
+            JwtAuthenticationEntryPoint entryPoint, CustomUserDetailsService userDetailsService,
+            BCryptPasswordEncoder passwordEncoder, JwtAuthenticationFilter authenticationFilter,
+            CustomAccessDeniedHandler accessDeniedHandler) {
         this.entryPoint = entryPoint;
         this.userDetailsService = userDetailsService;
         this.passwordEncoder = passwordEncoder;
         this.authenticationFilter = authenticationFilter;
+        this.accessDeniedHandler = accessDeniedHandler;
     }
 
     @Override
@@ -53,7 +59,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.cors().and().csrf().disable()
-                .exceptionHandling().authenticationEntryPoint(entryPoint).and()
+                .exceptionHandling()
+                .authenticationEntryPoint(entryPoint)
+                .accessDeniedHandler(accessDeniedHandler)
+                .and()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
                 .authorizeRequests().antMatchers(

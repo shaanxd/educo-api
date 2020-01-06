@@ -14,11 +14,11 @@ import java.io.IOException;
 public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
     @Override
     public void commence(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, AuthenticationException e) throws IOException {
-        GenericExceptionResponse exceptionResponse = new GenericExceptionResponse("Unauthorized");
-        String jsonExceptionResponse = new Gson().toJson(exceptionResponse);
+        GenericExceptionResponse exception = new GenericExceptionResponse("User has not authenticated. Please sign in  to continue.");
+        String jsonExceptionResponse = new Gson().toJson(exception);
 
         httpServletResponse.setContentType("application/json");
-        httpServletResponse.setStatus(401);
+        httpServletResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         httpServletResponse.getWriter().print(jsonExceptionResponse);
     }
 }
