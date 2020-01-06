@@ -13,8 +13,7 @@ public class RouteConstants {
     public static final String COMMENT_ROOT = "/api/comment";
     public static final String COMMENT_ADD_COMMENT = "/create-comment";
 
-    public static final String COMMENT_UPVOTE = "/upvote/{id}";
-    public static final String COMMENT_DOWNVOTE = "/downvote/{id}";
+    public static final String COMMENT_VOTE = "/vote/{id}";
 
     public static final String QUESTION_ROOT = "/api/question";
     public static final String QUESTION_ADD_QUESTION = "/create-question";

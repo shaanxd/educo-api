@@ -59,7 +59,7 @@ public class CommentService {
     }
 
     @Transactional
-    public Comment voteComment(String commentId, Boolean value, String userId) {
+    public CommentResponse voteComment(String commentId, Boolean value, String userId) {
         User user = userRepository.findById(userId).orElse(null);
         if (user == null) {
             throw new GenericException("User not found.", HttpStatus.NOT_FOUND);
@@ -71,7 +71,7 @@ public class CommentService {
         Vote vote = voteRepository.findByCommentAndOwner(comment, user);
         if (vote != null) {
             if (vote.isVote() == value) {
-                return comment;
+                return CommentResponse.transformToEntity(comment, user);
             }
         } else {
             vote = new Vote(comment, user);
@@ -83,6 +83,7 @@ public class CommentService {
         }
         vote.setVote(value);
         voteRepository.save(vote);
-        return commentRepository.findById(commentId).orElse(null);
+
+        return CommentResponse.transformToEntity(commentRepository.findById(commentId).orElse(comment), user);
     }
 }

@@ -5,12 +5,12 @@ import com.educo.educo.services.CommentService;
 import com.educo.educo.services.ValidationService;
 import com.educo.educo.utils.CheckUserAuth;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import static com.educo.educo.constants.RouteConstants.*;
@@ -37,13 +37,9 @@ public class CommentController {
         return ResponseEntity.ok(commentService.createComment(comment.getQuestionId(), comment.getParentId(), comment.transformToEntity(), checkUserAuth.checkAuth(auth)));
     }
 
-    @PostMapping(COMMENT_UPVOTE)
-    public ResponseEntity<?> upvoteComment(@PathVariable String id, Authentication authentication) {
-        return new ResponseEntity<>(commentService.voteComment(id, true, authentication.getName()), HttpStatus.OK);
-    }
-
-    @PostMapping(COMMENT_DOWNVOTE)
-    public ResponseEntity<?> downvoteComment(@PathVariable String id, Authentication authentication) {
-        return new ResponseEntity<>(commentService.voteComment(id, false, authentication.getName()), HttpStatus.OK);
+    @PostMapping(COMMENT_VOTE)
+    public ResponseEntity<?> voteComment(@PathVariable String id, HttpServletRequest request, Authentication auth) {
+        boolean value = validationService.validateVoteParams(request);
+        return ResponseEntity.ok(commentService.voteComment(id, value, auth.getName()));
     }
 }

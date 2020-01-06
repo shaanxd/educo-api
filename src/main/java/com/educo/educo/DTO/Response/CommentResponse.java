@@ -21,26 +21,33 @@ public class CommentResponse {
     private List<CommentResponse> children = new ArrayList<>();
     private OwnerResponse owner;
     private int votes;
-    private boolean userVote;
+    private String voteType;
 
-    private static CommentResponse transformToEntity(Comment comment, User user) {
+    public static CommentResponse transformToEntity(Comment comment, User user) {
         List<CommentResponse> children = new ArrayList<>();
         for (Comment nestedComment : comment.getChildren()) {
             children.add(transformToEntity(nestedComment, user));
         }
         OwnerResponse owner = OwnerResponse.transformFromEntity(comment.getOwner());
-        boolean voted = false;
+        String voteType = null;
         if (user != null) {
             for (Vote vote : comment.getVotes()) {
                 if (vote.getOwner().getId().equals(user.getId())) {
-                    voted = true;
+                    if (vote.isVote()) {
+                        voteType = "VOTE_UP";
+                    } else {
+                        voteType = "VOTE_DOWN";
+                    }
                     break;
                 }
+            }
+            if (voteType == null) {
+                voteType = "VOTE_EMPTY";
             }
         }
         return new CommentResponse(
                 comment.getId(), comment.getComment(), children,
-                owner, comment.getVoteCount(), voted
+                owner, comment.getVoteCount(), voteType
         );
     }
 
