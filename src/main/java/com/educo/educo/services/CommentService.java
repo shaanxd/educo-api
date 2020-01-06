@@ -69,7 +69,7 @@ public class CommentService {
 
     public Vote voteComment(String commentId, Boolean value, String userId) {
         User user = userRepository.findById(userId).orElse(null);
-        if(user == null) {
+        if (user == null) {
             throw new GenericException("User not found.", HttpStatus.NOT_FOUND);
         }
 

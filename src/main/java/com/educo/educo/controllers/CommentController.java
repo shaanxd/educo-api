@@ -13,8 +13,10 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
+import static com.educo.educo.constants.RouteConstants.*;
+
 @RestController
-@RequestMapping("/api/comment")
+@RequestMapping(COMMENT_ROOT)
 public class CommentController {
     private CommentService commentService;
     private ValidationService validationService;
@@ -25,7 +27,7 @@ public class CommentController {
         this.validationService = validationService;
     }
 
-    @PostMapping("/create-comment")
+    @PostMapping(COMMENT_ADD_COMMENT)
     public ResponseEntity<?> createComment(@Valid @RequestBody CommentRequest comment, BindingResult result, Authentication authentication) {
         if (result.hasErrors()) {
             return validationService.validate(result);
@@ -41,12 +43,12 @@ public class CommentController {
         return new ResponseEntity<>(newComment, HttpStatus.OK);
     }
 
-    @PostMapping("/upvote/{id}")
+    @PostMapping(COMMENT_UPVOTE)
     public ResponseEntity<?> upvoteComment(@PathVariable String id, Authentication authentication) {
         return new ResponseEntity<>(commentService.voteComment(id, true, authentication.getName()), HttpStatus.OK);
     }
 
-    @PostMapping("/downvote/{id}")
+    @PostMapping(COMMENT_DOWNVOTE)
     public ResponseEntity<?> downvoteComment(@PathVariable String id, Authentication authentication) {
         return new ResponseEntity<>(commentService.voteComment(id, false, authentication.getName()), HttpStatus.OK);
     }

@@ -15,10 +15,9 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Collections;
 
-import static com.educo.educo.security.SecurityConstants.HEADER_STRING;
-import static com.educo.educo.security.SecurityConstants.TOKEN_PREFIX;
+import static com.educo.educo.constants.SecurityConstants.HEADER_STRING;
+import static com.educo.educo.constants.SecurityConstants.TOKEN_PREFIX;
 
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
@@ -36,12 +35,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, FilterChain filterChain) throws ServletException, IOException {
         try {
             String token = getTokenFromRequest(httpServletRequest.getHeader(HEADER_STRING));
-            if (StringUtils.hasText(token)&&tokenProvider.validateToken(token)) {
+            if (StringUtils.hasText(token) && tokenProvider.validateToken(token)) {
                 String userId = tokenProvider.extractUserFromToken(token);
                 User user = userDetailsService.loadUserById(userId);
-
                 UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
-                        user, null, Collections.emptyList()
+                        user.getUsername(), null, user.getAuthorities()
                 );
                 auth.setDetails(new WebAuthenticationDetailsSource().buildDetails(httpServletRequest));
                 SecurityContextHolder.getContext().setAuthentication(auth);
@@ -53,7 +51,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
 
     private String getTokenFromRequest(String token) {
-        if (StringUtils.hasText(token)&&token.startsWith(TOKEN_PREFIX)) {
+        if (StringUtils.hasText(token) && token.startsWith(TOKEN_PREFIX)) {
             return token.replace(TOKEN_PREFIX, "");
         }
         return null;

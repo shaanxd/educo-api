@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.*;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.CascadeType;
@@ -14,10 +15,7 @@ import javax.persistence.Entity;
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Entity
 @NoArgsConstructor
@@ -26,8 +24,8 @@ import java.util.List;
 public class User implements UserDetails {
     @Id
     @GeneratedValue(generator = "UUID")
-    @GenericGenerator(name="UUID", strategy = "org.hibernate.id.UUIDGenerator")
-    @Column(name="id", updatable = false, nullable = false)
+    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
+    @Column(name = "id", updatable = false, nullable = false)
     private String id;
 
     @Email(message = "Invalid email address.")
@@ -61,11 +59,7 @@ public class User implements UserDetails {
     @Fetch(value = FetchMode.SUBSELECT)
     private List<Vote> votes = new ArrayList<>();
 
-    // One to many with Questions
-
-    // One to many Comments
-
-    // One to many Votes
+    private String role;
 
     @CreationTimestamp
     @JsonIgnore
@@ -80,7 +74,9 @@ public class User implements UserDetails {
     @Override
     @JsonIgnore
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
+        Set<GrantedAuthority> authoritySet = new HashSet<>();
+        authoritySet.add(new SimpleGrantedAuthority("ROLE_" + this.getRole()));
+        return authoritySet;
     }
 
     @Override

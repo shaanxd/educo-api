@@ -3,7 +3,6 @@ package com.educo.educo.services;
 import com.educo.educo.entities.User;
 import com.educo.educo.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -20,18 +19,19 @@ public class CustomUserDetailsService implements UserDetailsService {
     }
 
     @Override
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+    public User loadUserByUsername(String email) throws UsernameNotFoundException {
         User user = userRepository.findUserByEmail(email);
-        if(user==null) {
-            throw new UsernameNotFoundException("User not found.");
-        }
-        return user;
+        return getUserDetails(user);
     }
 
     @Transactional
     public User loadUserById(String id) {
         User user = userRepository.findById(id).orElse(null);
-        if(user==null) {
+        return getUserDetails(user);
+    }
+
+    private User getUserDetails(User user) {
+        if (user == null) {
             throw new UsernameNotFoundException("User not found.");
         }
         return user;

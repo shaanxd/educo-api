@@ -15,7 +15,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import static com.educo.educo.security.SecurityConstants.AUTH_URLS;
+import static com.educo.educo.constants.RouteConstants.AUTH_ALL;
 
 @Configuration
 @EnableWebSecurity
@@ -57,10 +57,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
                 .authorizeRequests().antMatchers(
-                        "/**/*.jpg",
-                        "/api/question/",
-                        AUTH_URLS
-                ).permitAll()
+                "/**/*.jpg",
+                "/api/question/",
+                AUTH_ALL
+        ).permitAll()
                 .anyRequest().authenticated();
 
         http.addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class);

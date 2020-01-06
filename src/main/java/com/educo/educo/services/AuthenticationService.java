@@ -9,13 +9,13 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
-public class UserService {
+public class AuthenticationService {
 
     private UserRepository userRepository;
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Autowired
-    public UserService(UserRepository userRepository, BCryptPasswordEncoder bCryptPasswordEncoder) {
+    public AuthenticationService(UserRepository userRepository, BCryptPasswordEncoder bCryptPasswordEncoder) {
         this.userRepository = userRepository;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
@@ -23,7 +23,7 @@ public class UserService {
     public User registerUser(User user) {
         User foundEmailUser = userRepository.findUserByEmail(user.getEmail());
         // Check whether email is unique
-        if(foundEmailUser != null) {
+        if (foundEmailUser != null) {
             throw new GenericException("Email already exists.", HttpStatus.BAD_REQUEST);
         }
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));

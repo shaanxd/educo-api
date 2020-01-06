@@ -4,7 +4,7 @@ import com.educo.educo.DTO.Request.LoginRequest;
 import com.educo.educo.DTO.Response.AuthenticationResponse;
 import com.educo.educo.entities.User;
 import com.educo.educo.security.JwtTokenProvider;
-import com.educo.educo.services.UserService;
+import com.educo.educo.services.AuthenticationService;
 import com.educo.educo.services.ValidationService;
 import com.educo.educo.validators.UserValidator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,28 +22,29 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 
-import static com.educo.educo.security.SecurityConstants.VALID_DURATION;
+import static com.educo.educo.constants.RouteConstants.*;
+import static com.educo.educo.constants.SecurityConstants.VALID_DURATION;
 
 @RestController
-@RequestMapping("/api/users")
-public class UserController {
+@RequestMapping(AUTH_ROOT)
+public class AuthenticationController {
 
-    private UserService userService;
+    private AuthenticationService authenticationService;
     private ValidationService validationService;
     private UserValidator userValidator;
     private JwtTokenProvider tokenProvider;
     private AuthenticationManager manager;
 
     @Autowired
-    public UserController(UserService userService, ValidationService validationService, UserValidator userValidator, JwtTokenProvider tokenProvider, AuthenticationManager manager) {
-        this.userService = userService;
+    public AuthenticationController(AuthenticationService authenticationService, ValidationService validationService, UserValidator userValidator, JwtTokenProvider tokenProvider, AuthenticationManager manager) {
+        this.authenticationService = authenticationService;
         this.validationService = validationService;
         this.userValidator = userValidator;
         this.tokenProvider = tokenProvider;
         this.manager = manager;
     }
 
-    @PostMapping("/login")
+    @PostMapping(AUTH_LOGIN)
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest, BindingResult result) {
         if (result.hasErrors()) {
             return validationService.validate(result);
@@ -61,7 +62,7 @@ public class UserController {
         return ResponseEntity.ok(new AuthenticationResponse(jwt, user.getId(), user.getFullName(), VALID_DURATION / 1000));
     }
 
-    @PostMapping("/register")
+    @PostMapping(AUTH_REGISTER)
     public ResponseEntity<?> registerUser(@Valid @RequestBody User user, BindingResult result) {
         // Validate passwords match
         userValidator.validate(user, result);
@@ -70,7 +71,7 @@ public class UserController {
             return validationService.validate(result);
         }
 
-        return new ResponseEntity<>(userService.registerUser(user), HttpStatus.CREATED);
+        return new ResponseEntity<>(authenticationService.registerUser(user), HttpStatus.CREATED);
     }
 
 }

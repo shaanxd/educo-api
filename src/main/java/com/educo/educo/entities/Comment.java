@@ -21,14 +21,14 @@ import java.util.List;
 public class Comment {
     @Id
     @GeneratedValue(generator = "UUID")
-    @GenericGenerator(name="UUID", strategy = "org.hibernate.id.UUIDGenerator")
-    @Column(name="id", updatable = false, nullable = false)
+    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
+    @Column(name = "id", updatable = false, nullable = false)
     private String id;
     @NotBlank(message = "Comment is required.")
     private String comment;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name="question_id")
+    @JoinColumn(name = "question_id")
     @JsonIgnore
     private Question question;
 

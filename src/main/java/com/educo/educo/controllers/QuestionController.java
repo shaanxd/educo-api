@@ -13,8 +13,10 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
+import static com.educo.educo.constants.RouteConstants.*;
+
 @RestController
-@RequestMapping("/api/question")
+@RequestMapping(QUESTION_ROOT)
 public class QuestionController {
     private QuestionService questionService;
     private ValidationService validationService;
@@ -25,22 +27,22 @@ public class QuestionController {
         this.validationService = validationService;
     }
 
-    @PostMapping("")
+    @PostMapping(QUESTION_ADD_QUESTION)
     public ResponseEntity<?> createQuestion(@Valid @RequestBody QuestionRequest questionRequest, BindingResult result, Authentication authentication) {
-        if(result.hasErrors()) {
+        if (result.hasErrors()) {
             return validationService.validate(result);
         }
         Question createdQuestion = questionService.createQuestion(questionRequest.transformToEntity(), authentication.getName());
         return new ResponseEntity<>(createdQuestion, HttpStatus.CREATED);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping(QUESTION_GET_QUESTION)
     public ResponseEntity<?> getQuestionById(@PathVariable String id) {
         Question question = questionService.getQuestion(id);
         return new ResponseEntity<>(question, HttpStatus.OK);
     }
 
-    @GetMapping("/")
+    @GetMapping(QUESTION_GET_QUESTIONS)
     public ResponseEntity<?> getQuestions() {
         return new ResponseEntity<>(questionService.getQuestions(), HttpStatus.OK);
     }
