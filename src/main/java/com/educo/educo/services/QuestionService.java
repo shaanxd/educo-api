@@ -1,5 +1,6 @@
 package com.educo.educo.services;
 
+import com.educo.educo.DTO.Response.QuestionResponse;
 import com.educo.educo.entities.Question;
 import com.educo.educo.entities.User;
 import com.educo.educo.exceptions.GenericException;
@@ -8,6 +9,8 @@ import com.educo.educo.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class QuestionService {
@@ -29,15 +32,15 @@ public class QuestionService {
         return questionRepository.save(question);
     }
 
-    public Question getQuestion(String questionId) {
+    public QuestionResponse getQuestion(String questionId, User user) {
         Question question = questionRepository.findById(questionId).orElse(null);
         if (question == null) {
             throw new GenericException("Question not found", HttpStatus.NOT_FOUND);
         }
-        return question;
+        return QuestionResponse.transformFromEntity(question, user);
     }
 
-    public Iterable<Question> getQuestions() {
-        return questionRepository.findAll();
+    public List<QuestionResponse> getQuestions(User user) {
+        return QuestionResponse.transformFromEntities(questionRepository.findAll(), user);
     }
 }

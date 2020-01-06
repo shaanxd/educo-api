@@ -1,9 +1,9 @@
 package com.educo.educo.controllers;
 
 import com.educo.educo.DTO.Request.CommentRequest;
-import com.educo.educo.entities.Comment;
 import com.educo.educo.services.CommentService;
 import com.educo.educo.services.ValidationService;
+import com.educo.educo.utils.CheckUserAuth;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,27 +20,21 @@ import static com.educo.educo.constants.RouteConstants.*;
 public class CommentController {
     private CommentService commentService;
     private ValidationService validationService;
+    private CheckUserAuth checkUserAuth;
 
     @Autowired
-    public CommentController(CommentService commentService, ValidationService validationService) {
+    public CommentController(CommentService commentService, ValidationService validationService, CheckUserAuth checkUserAuth) {
         this.commentService = commentService;
         this.validationService = validationService;
+        this.checkUserAuth = checkUserAuth;
     }
 
     @PostMapping(COMMENT_ADD_COMMENT)
-    public ResponseEntity<?> createComment(@Valid @RequestBody CommentRequest comment, BindingResult result, Authentication authentication) {
+    public ResponseEntity<?> createComment(@Valid @RequestBody CommentRequest comment, BindingResult result, Authentication auth) {
         if (result.hasErrors()) {
             return validationService.validate(result);
         }
-        Comment newComment;
-        Comment transformedComment = comment.transformToEntity();
-
-        if (comment.getParentId() != null) {
-            newComment = commentService.createChildComment(comment.getQuestionId(), comment.getParentId(), transformedComment, authentication.getName());
-        } else {
-            newComment = commentService.createComment(comment.getQuestionId(), transformedComment, authentication.getName());
-        }
-        return new ResponseEntity<>(newComment, HttpStatus.OK);
+        return ResponseEntity.ok(commentService.createComment(comment.getQuestionId(), comment.getParentId(), comment.transformToEntity(), checkUserAuth.checkAuth(auth)));
     }
 
     @PostMapping(COMMENT_UPVOTE)
