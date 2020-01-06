@@ -12,6 +12,7 @@ import com.educo.educo.repositories.VoteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class CommentService {
@@ -67,24 +68,31 @@ public class CommentService {
         return commentRepository.save(comment);
     }
 
-    public Vote voteComment(String commentId, Boolean value, String userId) {
+    @Transactional
+    public Comment voteComment(String commentId, Boolean value, String userId) {
         User user = userRepository.findById(userId).orElse(null);
         if (user == null) {
             throw new GenericException("User not found.", HttpStatus.NOT_FOUND);
         }
-
         Comment comment = commentRepository.findById(commentId).orElse(null);
         if (comment == null) {
             throw new GenericException("Comment not found.", HttpStatus.NOT_FOUND);
         }
-
         Vote vote = voteRepository.findByCommentAndOwner(comment, user);
-        if (vote == null) {
-            vote = new Vote();
-            vote.setComment(comment);
-            vote.setOwner(user);
+        if (vote != null) {
+            if (vote.isVote() == value) {
+                return comment;
+            }
+        } else {
+            vote = new Vote(comment, user);
+        }
+        if (value) {
+            commentRepository.upVoteComment(comment.getId());
+        } else {
+            commentRepository.downVoteComment(comment.getId());
         }
         vote.setVote(value);
-        return voteRepository.save(vote);
+        voteRepository.save(vote);
+        return commentRepository.findById(commentId).orElse(null);
     }
 }

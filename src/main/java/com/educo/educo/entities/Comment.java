@@ -27,6 +27,8 @@ public class Comment {
     @NotBlank(message = "Comment is required.")
     private String comment;
 
+    private Integer voteCount;
+
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "question_id")
     @JsonIgnore

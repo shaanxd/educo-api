@@ -40,4 +40,9 @@ public class Vote {
     @JsonIgnore
     @UpdateTimestamp
     private Date updatedAt;
+
+    public Vote(Comment comment, User owner) {
+        this.comment = comment;
+        this.owner = owner;
+    }
 }
