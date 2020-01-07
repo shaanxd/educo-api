@@ -40,6 +40,6 @@ public class CommentController {
     @PostMapping(COMMENT_VOTE)
     public ResponseEntity<?> voteComment(@PathVariable String id, HttpServletRequest request, Authentication auth) {
         boolean value = validationService.validateVoteParams(request);
-        return ResponseEntity.ok(commentService.voteComment(id, value, auth.getName()));
+        return ResponseEntity.ok(commentService.voteComment(id, value, checkUserAuth.checkAuth(auth)));
     }
 }

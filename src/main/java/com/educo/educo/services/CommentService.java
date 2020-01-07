@@ -8,7 +8,6 @@ import com.educo.educo.entities.Vote;
 import com.educo.educo.exceptions.GenericException;
 import com.educo.educo.repositories.CommentRepository;
 import com.educo.educo.repositories.QuestionRepository;
-import com.educo.educo.repositories.UserRepository;
 import com.educo.educo.repositories.VoteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,14 +19,12 @@ public class CommentService {
     private CommentRepository commentRepository;
     private QuestionRepository questionRepository;
     private VoteRepository voteRepository;
-    private UserRepository userRepository;
 
     @Autowired
-    public CommentService(CommentRepository commentRepository, QuestionRepository questionRepository, VoteRepository voteRepository, UserRepository userRepository) {
+    public CommentService(CommentRepository commentRepository, QuestionRepository questionRepository, VoteRepository voteRepository) {
         this.commentRepository = commentRepository;
         this.questionRepository = questionRepository;
         this.voteRepository = voteRepository;
-        this.userRepository = userRepository;
     }
 
     public Iterable<CommentResponse> createComment(String questionID, String parentID, Comment comment, User user) {
@@ -59,8 +56,8 @@ public class CommentService {
     }
 
     @Transactional
-    public CommentResponse voteComment(String commentId, Boolean value, String userId) {
-        User user = userRepository.findById(userId).orElse(null);
+    public CommentResponse voteComment(String commentId, Boolean value, User user) {
+        boolean voteExistsButOpposite = false;
         if (user == null) {
             throw new GenericException("User not found.", HttpStatus.NOT_FOUND);
         }
@@ -69,20 +66,24 @@ public class CommentService {
             throw new GenericException("Comment not found.", HttpStatus.NOT_FOUND);
         }
         Vote vote = voteRepository.findByCommentAndOwner(comment, user);
-        if (vote != null) {
-            if (vote.isVote() == value) {
-                return CommentResponse.transformToEntity(comment, user);
-            }
-        } else {
+        if (vote == null) {
             vote = new Vote(comment, user);
-        }
-        if (value) {
-            commentRepository.upVoteComment(comment.getId());
+        } else if (vote.isVote() != value) {
+            voteExistsButOpposite = true;
         } else {
-            commentRepository.downVoteComment(comment.getId());
+            return CommentResponse.transformToEntity(comment, user);
+        }
+        int voteDifference = 1;
+        if (voteExistsButOpposite) {
+            voteDifference += 1;
         }
         vote.setVote(value);
         voteRepository.save(vote);
+        if (value) {
+            commentRepository.upVoteComment(comment.getId(), voteDifference);
+        } else {
+            commentRepository.downVoteComment(comment.getId(), voteDifference);
+        }
 
         return CommentResponse.transformToEntity(commentRepository.findById(commentId).orElse(comment), user);
     }
