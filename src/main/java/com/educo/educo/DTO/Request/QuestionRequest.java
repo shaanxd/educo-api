@@ -6,18 +6,21 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.NotBlank;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class QuestionRequest {
-    @NotNull(message = "Question title cannot be empty")
+    @NotBlank(message = "Question title cannot be empty")
     private String title;
 
-    @NotNull(message = "Question description cannot be empty")
+    @NotBlank(message = "Question description cannot be empty")
     private String description;
+
+    @NotBlank(message = "Question category cannot be empty.")
+    private String categoryId;
 
     public Question transformToEntity() {
         return new Question(this.title, this.description);

@@ -1,9 +1,11 @@
 package com.educo.educo.services;
 
 import com.educo.educo.DTO.Response.QuestionResponse;
+import com.educo.educo.entities.Category;
 import com.educo.educo.entities.Question;
 import com.educo.educo.entities.User;
 import com.educo.educo.exceptions.GenericException;
+import com.educo.educo.repositories.CategoryRepository;
 import com.educo.educo.repositories.QuestionRepository;
 import com.educo.educo.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,20 +18,27 @@ import java.util.List;
 public class QuestionService {
     private QuestionRepository questionRepository;
     private UserRepository userRepository;
+    private CategoryRepository categoryRepository;
 
     @Autowired
-    public QuestionService(QuestionRepository questionRepository, UserRepository userRepository) {
+    public QuestionService(QuestionRepository questionRepository, UserRepository userRepository, CategoryRepository categoryRepository) {
         this.questionRepository = questionRepository;
         this.userRepository = userRepository;
+        this.categoryRepository = categoryRepository;
     }
 
-    public Question createQuestion(Question question, String userId) {
+    public QuestionResponse createQuestion(Question question, String categoryId, String userId) {
         User user = userRepository.findById(userId).orElse(null);
         if (user == null) {
             throw new GenericException("User not found", HttpStatus.NOT_FOUND);
         }
+        Category category = categoryRepository.findById(categoryId).orElse(null);
+        if (category == null) {
+            throw new GenericException("Category not found", HttpStatus.NOT_FOUND);
+        }
         question.setOwner(user);
-        return questionRepository.save(question);
+        question.setCategory(category);
+        return QuestionResponse.transformFromEntity(questionRepository.save(question), user);
     }
 
     public QuestionResponse getQuestion(String questionId, User user) {

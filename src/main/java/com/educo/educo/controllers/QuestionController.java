@@ -2,7 +2,6 @@ package com.educo.educo.controllers;
 
 import com.educo.educo.DTO.Request.QuestionRequest;
 import com.educo.educo.DTO.Response.QuestionResponse;
-import com.educo.educo.entities.Question;
 import com.educo.educo.services.QuestionService;
 import com.educo.educo.services.ValidationService;
 import com.educo.educo.utils.CheckUserAuth;
@@ -36,7 +35,7 @@ public class QuestionController {
         if (result.hasErrors()) {
             return validationService.validate(result);
         }
-        Question question = questionService.createQuestion(questionRequest.transformToEntity(), auth.getName());
+        QuestionResponse question = questionService.createQuestion(questionRequest.transformToEntity(), questionRequest.getCategoryId(), auth.getName());
         return ResponseEntity.ok(question);
     }
 

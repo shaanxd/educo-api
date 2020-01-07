@@ -9,27 +9,31 @@ import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 @Entity
-@NoArgsConstructor
 @Getter
 @Setter
-public class Question {
+@NoArgsConstructor
+public class Category {
     @Id
     @GeneratedValue(generator = "UUID")
     @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
     @Column(name = "id", updatable = false, nullable = false)
     private String id;
 
+    @NotBlank(message = "Category title is required.")
     private String title;
 
+    @NotBlank(message = "Category description is required.")
     private String description;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "question")
-    private List<Comment> comments = new ArrayList<>();
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "category", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private List<Question> questions = new ArrayList<>();
 
     @CreationTimestamp
     @JsonIgnore
@@ -38,17 +42,4 @@ public class Question {
     @JsonIgnore
     @UpdateTimestamp
     private Date updatedAt;
-
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "owner_id")
-    private User owner;
-
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "category_id")
-    private Category category;
-
-    public Question(String title, String description) {
-        this.title = title;
-        this.description = description;
-    }
 }

@@ -9,10 +9,10 @@ public class RouteConstants {
 
     public static final String ADMIN_ROOT = "/api/admin";
     public static final String ADMIN_GET_USERS = "/users";
+    public static final String ADMIN_ADD_CATEGORY = "/create-category";
 
     public static final String COMMENT_ROOT = "/api/comment";
     public static final String COMMENT_ADD_COMMENT = "/create-comment";
-
     public static final String COMMENT_VOTE = "/vote/{id}";
 
     public static final String QUESTION_ROOT = "/api/question";
