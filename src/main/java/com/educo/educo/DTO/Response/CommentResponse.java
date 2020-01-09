@@ -18,10 +18,11 @@ import java.util.List;
 public class CommentResponse {
     private String id;
     private String comment;
-    private List<CommentResponse> children = new ArrayList<>();
-    private OwnerResponse owner;
     private long votes;
     private String voteType;
+    private long childCount;
+    private OwnerResponse owner;
+    private List<CommentResponse> children = new ArrayList<>();
 
     public static CommentResponse transformToEntity(Comment comment, User user) {
         List<CommentResponse> children = new ArrayList<>();
@@ -47,8 +48,8 @@ public class CommentResponse {
         }
         long voteCount = comment.getPositive() - comment.getNegative();
         return new CommentResponse(
-                comment.getId(), comment.getComment(), children,
-                owner, voteCount, voteType
+                comment.getId(), comment.getComment(), voteCount,
+                voteType, comment.getChildCount(), owner, children
         );
     }
 

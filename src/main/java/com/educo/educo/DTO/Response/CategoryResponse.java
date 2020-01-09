@@ -12,8 +12,9 @@ class CategoryResponse {
     private String id;
     private String title;
     private String description;
+    private long count;
 
     static CategoryResponse transformFromEntity(Category category) {
-        return new CategoryResponse(category.getId(), category.getTitle(), category.getDescription());
+        return new CategoryResponse(category.getId(), category.getTitle(), category.getDescription(), category.getCount());
     }
 }

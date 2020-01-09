@@ -47,6 +47,9 @@ public class Comment {
     @Formula("(SELECT COUNT(*) FROM Vote i WHERE id = i.comment_id AND i.vote = false)")
     private long negative = 0;
 
+    @Formula("(SELECT COUNT(*) FROM Comment i WHERE id = i.parent_id)")
+    private long childCount = 0;
+
     @OneToMany(mappedBy = "comment", cascade = CascadeType.ALL)
     private List<Vote> votes = new ArrayList<>();
 
