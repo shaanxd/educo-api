@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import static com.educo.educo.constants.AuthConstants.AUTH_ADMIN;
 import static com.educo.educo.constants.AuthConstants.AUTH_USER;
 import static com.educo.educo.constants.SecurityConstants.VALID_DURATION;
 
@@ -28,16 +29,22 @@ public class AuthenticationService {
     }
 
     public AuthenticationResponse registerUser(User user) {
+        User savedUser = registerAnyUser(user, AUTH_USER);
+        String token = tokenProvider.generateToken(savedUser);
+        return new AuthenticationResponse(token, user.getId(), user.getFullName(), user.getRole(), VALID_DURATION / 1000);
+    }
+
+    public User registerAdminUser(User user) {
+        return registerAnyUser(user, AUTH_ADMIN);
+    }
+
+    private User registerAnyUser(User user, String role) {
         User foundEmailUser = userRepository.findUserByEmail(user.getEmail());
-        // Check whether email is unique
         if (foundEmailUser != null) {
             throw new GenericException("Email already exists.", HttpStatus.BAD_REQUEST);
         }
-        user.setRole(AUTH_USER);
+        user.setRole(role);
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-        User savedUser = userRepository.save(user);
-
-        String token = tokenProvider.generateToken(savedUser);
-        return new AuthenticationResponse(token, user.getId(), user.getFullName(), VALID_DURATION / 1000);
+        return userRepository.save(user);
     }
 }

@@ -59,7 +59,7 @@ public class AuthenticationController {
         SecurityContextHolder.getContext().setAuthentication(authentication);
         User user = (User) authentication.getPrincipal();
         String jwt = tokenProvider.generateToken(user);
-        return ResponseEntity.ok(new AuthenticationResponse(jwt, user.getId(), user.getFullName(), VALID_DURATION / 1000));
+        return ResponseEntity.ok(new AuthenticationResponse(jwt, user.getId(), user.getFullName(), user.getRole(), VALID_DURATION / 1000));
     }
 
     @PostMapping(AUTH_REGISTER)
