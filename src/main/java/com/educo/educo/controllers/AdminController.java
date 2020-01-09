@@ -4,15 +4,18 @@ import com.educo.educo.entities.Category;
 import com.educo.educo.services.CategoryService;
 import com.educo.educo.services.ValidationService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 
-import static com.educo.educo.constants.RouteConstants.*;
+import static com.educo.educo.constants.RouteConstants.ADMIN_ADD_CATEGORY;
+import static com.educo.educo.constants.RouteConstants.ADMIN_ROOT;
 
 @RestController
 @RequestMapping(ADMIN_ROOT)
@@ -24,12 +27,6 @@ public class AdminController {
     public AdminController(ValidationService validationService, CategoryService categoryService) {
         this.validationService = validationService;
         this.categoryService = categoryService;
-    }
-
-    @PreAuthorize("hasRole('ADMIN')")
-    @GetMapping(ADMIN_GET_USERS)
-    public ResponseEntity<?> getUserList() {
-        return new ResponseEntity<>("Auth successful!", HttpStatus.OK);
     }
 
     @PreAuthorize("hasRole('ADMIN')")

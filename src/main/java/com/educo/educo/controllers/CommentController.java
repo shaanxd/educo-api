@@ -5,6 +5,7 @@ import com.educo.educo.services.CommentService;
 import com.educo.educo.services.ValidationService;
 import com.educo.educo.utils.CheckUserAuth;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.validation.BindingResult;
@@ -35,6 +36,11 @@ public class CommentController {
             return validationService.validate(result);
         }
         return ResponseEntity.ok(commentService.createComment(comment.getQuestionId(), comment.getParentId(), comment.transformToEntity(), checkUserAuth.checkAuth(auth)));
+    }
+
+    @GetMapping(COMMENT_GET_BY_QUESTION)
+    public ResponseEntity<?> getComments(@PathVariable String id, Pageable pageable, Authentication auth) {
+        return ResponseEntity.ok(commentService.getComments(id, pageable, checkUserAuth.checkAuth(auth)));
     }
 
     @PostMapping(COMMENT_VOTE)

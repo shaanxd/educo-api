@@ -1,5 +1,6 @@
 package com.educo.educo.services;
 
+import com.educo.educo.DTO.Response.CommentListResponse;
 import com.educo.educo.DTO.Response.CommentResponse;
 import com.educo.educo.entities.Comment;
 import com.educo.educo.entities.Question;
@@ -10,6 +11,7 @@ import com.educo.educo.repositories.CommentRepository;
 import com.educo.educo.repositories.QuestionRepository;
 import com.educo.educo.repositories.VoteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -87,5 +89,16 @@ public class CommentService {
         }
 
         return CommentResponse.transformToEntity(commentRepository.findById(commentId).orElse(comment), user);
+    }
+
+    public CommentListResponse getComments(String id, Pageable pageable, User user) {
+        Question question = questionRepository.findById(id).orElse(null);
+        if (question == null) {
+            throw new GenericException("Question not found", HttpStatus.NOT_FOUND);
+        }
+
+        Page<Comment> comments = commentRepository.findByQuestion(question, pageable);
+
+        return new CommentListResponse(comments.getTotalPages(), comments.getNumber(), comments.getContent(), user);
     }
 }

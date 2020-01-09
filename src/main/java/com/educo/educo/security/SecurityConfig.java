@@ -68,8 +68,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests().antMatchers(
                 "/**/*.jpg",
                 QUESTION_ROOT.concat(QUESTION_GET_QUESTION),
-                QUESTION_ROOT.concat(QUESTION_GET_QUESTIONS),
                 QUESTION_ROOT.concat(QUESTION_GET_BY_CATEGORY),
+                COMMENT_ROOT.concat(COMMENT_GET_BY_QUESTION),
                 AUTH_ALL
         ).permitAll()
                 .anyRequest().authenticated();
