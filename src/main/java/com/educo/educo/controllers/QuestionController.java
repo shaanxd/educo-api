@@ -1,18 +1,19 @@
 package com.educo.educo.controllers;
 
 import com.educo.educo.DTO.Request.QuestionRequest;
+import com.educo.educo.DTO.Response.QuestionListResponse;
 import com.educo.educo.DTO.Response.QuestionResponse;
 import com.educo.educo.services.QuestionService;
 import com.educo.educo.services.ValidationService;
 import com.educo.educo.utils.CheckUserAuth;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.List;
 
 import static com.educo.educo.constants.RouteConstants.*;
 
@@ -40,14 +41,20 @@ public class QuestionController {
     }
 
     @GetMapping(QUESTION_GET_QUESTION)
-    public ResponseEntity<?> getQuestionById(@PathVariable String id, Authentication auth) {
+    public ResponseEntity<?> getQuestion(@PathVariable String id, Authentication auth) {
         QuestionResponse question = questionService.getQuestion(id, checkUserAuth.checkAuth(auth));
         return ResponseEntity.ok(question);
     }
 
     @GetMapping(QUESTION_GET_QUESTIONS)
-    public ResponseEntity<?> getQuestions(Authentication auth) {
-        List<QuestionResponse> questions = questionService.getQuestions(checkUserAuth.checkAuth(auth));
+    public ResponseEntity<?> getQuestions(Pageable pageable) {
+        QuestionListResponse questions = questionService.getQuestions(pageable);
+        return ResponseEntity.ok(questions);
+    }
+
+    @GetMapping(QUESTION_GET_BY_CATEGORY)
+    public ResponseEntity<?> getQuestionsByCategory(@PathVariable String id, Pageable pageable) {
+        QuestionListResponse questions = questionService.getQuestionsByCategory(id, pageable);
         return ResponseEntity.ok(questions);
     }
 }

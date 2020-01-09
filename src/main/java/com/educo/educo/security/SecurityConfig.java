@@ -69,6 +69,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 "/**/*.jpg",
                 QUESTION_ROOT.concat(QUESTION_GET_QUESTION),
                 QUESTION_ROOT.concat(QUESTION_GET_QUESTIONS),
+                QUESTION_ROOT.concat(QUESTION_GET_BY_CATEGORY),
                 AUTH_ALL
         ).permitAll()
                 .anyRequest().authenticated();

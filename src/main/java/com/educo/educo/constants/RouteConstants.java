@@ -15,9 +15,10 @@ public class RouteConstants {
     public static final String COMMENT_ADD_COMMENT = "/create-comment";
     public static final String COMMENT_VOTE = "/vote/{id}";
 
-    public static final String QUESTION_ROOT = "/api/question";
+    public static final String QUESTION_ROOT = "/api/questions";
     public static final String QUESTION_ADD_QUESTION = "/create-question";
-    public static final String QUESTION_GET_QUESTION = "/{id}";
-    public static final String QUESTION_GET_QUESTIONS = "/";
+    public static final String QUESTION_GET_QUESTION = "/question/{id}";
+    public static final String QUESTION_GET_QUESTIONS = "";
 
+    public static final String QUESTION_GET_BY_CATEGORY = "/by-category/{id}";
 }

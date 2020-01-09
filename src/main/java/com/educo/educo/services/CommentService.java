@@ -10,6 +10,7 @@ import com.educo.educo.repositories.CommentRepository;
 import com.educo.educo.repositories.QuestionRepository;
 import com.educo.educo.repositories.VoteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -50,7 +51,7 @@ public class CommentService {
         comment.setOwner(user);
         commentRepository.save(comment);
 
-        Iterable<Comment> commentList = commentRepository.findByQuestion(question);
+        Iterable<Comment> commentList = commentRepository.findByQuestion(question, Pageable.unpaged());
 
         return CommentResponse.transformFromEntities(commentList, user);
     }
