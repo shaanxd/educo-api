@@ -1,7 +1,9 @@
 package com.educo.educo.security;
 
 import com.educo.educo.entities.User;
+import com.educo.educo.exceptions.GenericException;
 import io.jsonwebtoken.*;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
@@ -29,17 +31,16 @@ public class JwtTokenProvider {
             Jwts.parser().setSigningKey(JWT_SECRET).parseClaimsJws(token);
             return true;
         } catch (SignatureException ex) {
-            System.out.println("Invalid JWT Signature");
+            throw new GenericException("Invalid Token Signature.", HttpStatus.UNAUTHORIZED);
         } catch (MalformedJwtException ex) {
-            System.out.println("JWT Token is altered.");
+            throw new GenericException("Token is altered.", HttpStatus.UNAUTHORIZED);
         } catch (ExpiredJwtException ex) {
-            System.out.println("Token has expired.");
+            throw new GenericException("Token has expired.", HttpStatus.UNAUTHORIZED);
         } catch (UnsupportedJwtException ex) {
-            System.out.println("Unsupported JWT Token");
+            throw new GenericException("Unsupported Token.", HttpStatus.UNAUTHORIZED);
         } catch (IllegalArgumentException ex) {
-            System.out.println("JWT claims string is empty.");
+            throw new GenericException("Token claims string is empty.", HttpStatus.UNAUTHORIZED);
         }
-        return false;
     }
 
     String extractUserFromToken(String token) {

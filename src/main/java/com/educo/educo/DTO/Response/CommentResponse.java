@@ -41,9 +41,9 @@ public class CommentResponse {
                     break;
                 }
             }
-            if (voteType == null) {
-                voteType = "VOTE_EMPTY";
-            }
+        }
+        if (voteType == null) {
+            voteType = "VOTE_EMPTY";
         }
         return new CommentResponse(
                 comment.getId(), comment.getComment(), children,
