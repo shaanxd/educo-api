@@ -51,4 +51,10 @@ public class QuestionController {
         QuestionListResponse questions = questionService.getQuestionsByCategory(id, pageable);
         return ResponseEntity.ok(questions);
     }
+
+    @GetMapping(QUESTION_GET)
+    public ResponseEntity<?> getQuestions(Pageable pageable) {
+        QuestionListResponse questions = questionService.getQuestions(pageable);
+        return ResponseEntity.ok(questions);
+    }
 }
