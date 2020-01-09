@@ -64,13 +64,10 @@ public class AuthenticationController {
 
     @PostMapping(AUTH_REGISTER)
     public ResponseEntity<?> registerUser(@Valid @RequestBody User user, BindingResult result) {
-        // Validate passwords match
         userValidator.validate(user, result);
-
         if (result.hasErrors()) {
             return validationService.validate(result);
         }
-
         return new ResponseEntity<>(authenticationService.registerUser(user), HttpStatus.CREATED);
     }
 
