@@ -17,17 +17,21 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
+
 @Service
 public class CommentService {
     private CommentRepository commentRepository;
     private QuestionRepository questionRepository;
     private VoteRepository voteRepository;
+    private EntityManager entityManager;
 
     @Autowired
-    public CommentService(CommentRepository commentRepository, QuestionRepository questionRepository, VoteRepository voteRepository) {
+    public CommentService(CommentRepository commentRepository, QuestionRepository questionRepository, VoteRepository voteRepository, EntityManager entityManager) {
         this.commentRepository = commentRepository;
         this.questionRepository = questionRepository;
         this.voteRepository = voteRepository;
+        this.entityManager = entityManager;
     }
 
     public Iterable<CommentResponse> createComment(String questionID, String parentID, Comment comment, User user) {
@@ -60,7 +64,6 @@ public class CommentService {
 
     @Transactional
     public CommentResponse voteComment(String commentId, Boolean value, User user) {
-        boolean voteExistsButOpposite = false;
         if (user == null) {
             throw new GenericException("User not found.", HttpStatus.NOT_FOUND);
         }
@@ -69,24 +72,18 @@ public class CommentService {
             throw new GenericException("Comment not found.", HttpStatus.NOT_FOUND);
         }
         Vote vote = voteRepository.findByCommentAndOwner(comment, user);
-        if (vote == null) {
-            vote = new Vote(comment, user);
-        } else if (vote.isVote() != value) {
-            voteExistsButOpposite = true;
-        } else {
+        if (vote != null && vote.isVote() == value) {
             return CommentResponse.transformToEntity(comment, user);
         }
-        int voteDifference = 1;
-        if (voteExistsButOpposite) {
-            voteDifference += 1;
+        if (vote == null) {
+            vote = new Vote(comment, user);
         }
         vote.setVote(value);
         voteRepository.save(vote);
-        if (value) {
-            commentRepository.upVoteComment(comment.getId(), voteDifference);
-        } else {
-            commentRepository.downVoteComment(comment.getId(), voteDifference);
-        }
+
+        // Important to flush and clear changes to update vote count of a comment
+        entityManager.flush();
+        entityManager.clear();
 
         return CommentResponse.transformToEntity(commentRepository.findById(commentId).orElse(comment), user);
     }

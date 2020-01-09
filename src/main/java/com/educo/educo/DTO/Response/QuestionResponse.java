@@ -21,16 +21,18 @@ public class QuestionResponse {
     private String description;
     private OwnerResponse owner;
     private CategoryResponse category;
+    private long numberOfComments = 0;
     private long total = 0;
     private long current = 0;
     private List<CommentResponse> comments = new ArrayList<>();
 
-    private QuestionResponse(String id, String title, String description, OwnerResponse owner, CategoryResponse category) {
+    private QuestionResponse(String id, String title, String description, OwnerResponse owner, CategoryResponse category, long numberOfComments) {
         this.id = id;
         this.title = title;
         this.description = description;
         this.owner = owner;
         this.category = category;
+        this.numberOfComments = numberOfComments;
     }
 
     public static QuestionResponse transformFromEntity(Question question) {
@@ -42,16 +44,9 @@ public class QuestionResponse {
                 question.getTitle(),
                 question.getDescription(),
                 questionOwner,
-                questionCategory
+                questionCategory,
+                question.getNumberOfComments()
         );
-    }
-
-    public static List<QuestionResponse> transformFromEntities(Iterable<Question> questions) {
-        List<QuestionResponse> questionResponses = new ArrayList<>();
-        for (Question question : questions) {
-            questionResponses.add(transformFromEntity(question));
-        }
-        return questionResponses;
     }
 
     public void setCommentDetails(long total, long current, List<Comment> comments, User user) {

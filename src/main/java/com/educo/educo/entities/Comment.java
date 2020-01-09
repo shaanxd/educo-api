@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.Formula;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -27,8 +28,6 @@ public class Comment {
     @NotBlank(message = "Comment is required.")
     private String comment;
 
-    private Integer voteCount = 0;
-
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "question_id")
     @JsonIgnore
@@ -41,6 +40,12 @@ public class Comment {
     @JoinColumn(referencedColumnName = "id")
     @JsonIgnore
     private Comment parent;
+
+    @Formula("(SELECT COUNT(*) FROM Vote i WHERE id = i.comment_id AND i.vote = true)")
+    private long positive = 0;
+
+    @Formula("(SELECT COUNT(*) FROM Vote i WHERE id = i.comment_id AND i.vote = false)")
+    private long negative = 0;
 
     @OneToMany(mappedBy = "comment", cascade = CascadeType.ALL)
     private List<Vote> votes = new ArrayList<>();

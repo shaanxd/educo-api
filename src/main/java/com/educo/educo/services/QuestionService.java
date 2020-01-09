@@ -52,7 +52,7 @@ public class QuestionService {
         if (question == null) {
             throw new GenericException("Question not found", HttpStatus.NOT_FOUND);
         }
-
+        System.out.println(question.getNumberOfComments());
         Pageable pageable = PageRequest.of(0, 5);
         Page<Comment> comments = commentRepository.findByQuestion(question, pageable);
         QuestionResponse response = QuestionResponse.transformFromEntity(question);

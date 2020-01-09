@@ -20,7 +20,7 @@ public class CommentResponse {
     private String comment;
     private List<CommentResponse> children = new ArrayList<>();
     private OwnerResponse owner;
-    private int votes;
+    private long votes;
     private String voteType;
 
     public static CommentResponse transformToEntity(Comment comment, User user) {
@@ -45,9 +45,10 @@ public class CommentResponse {
         if (voteType == null) {
             voteType = "VOTE_EMPTY";
         }
+        long voteCount = comment.getPositive() - comment.getNegative();
         return new CommentResponse(
                 comment.getId(), comment.getComment(), children,
-                owner, comment.getVoteCount(), voteType
+                owner, voteCount, voteType
         );
     }
 

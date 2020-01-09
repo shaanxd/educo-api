@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.Formula;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -30,6 +31,9 @@ public class Question {
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "question")
     private List<Comment> comments = new ArrayList<>();
+
+    @Formula("(SELECT COUNT(*) FROM Comment i WHERE id = i.question_id)")
+    private long numberOfComments = 0;
 
     @CreationTimestamp
     @JsonIgnore
