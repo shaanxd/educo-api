@@ -8,11 +8,10 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.Formula;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.util.StringUtils;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Entity
 @NoArgsConstructor
@@ -28,6 +27,8 @@ public class Question {
     private String title;
 
     private String description;
+
+    private String images;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "question")
     private List<Comment> comments = new ArrayList<>();
@@ -54,5 +55,16 @@ public class Question {
     public Question(String title, String description) {
         this.title = title;
         this.description = description;
+    }
+
+    public List<String> getArrayFromString() {
+        if (StringUtils.hasText(this.images)) {
+            return Arrays.asList(this.images.split(","));
+        }
+        return Collections.emptyList();
+    }
+
+    public void setStringFromArray(List<String> imageList) {
+        this.images = String.join(",", imageList);
     }
 }

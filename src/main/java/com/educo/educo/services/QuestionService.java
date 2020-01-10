@@ -17,6 +17,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @Service
 public class QuestionService {
@@ -24,26 +27,34 @@ public class QuestionService {
     private UserRepository userRepository;
     private CategoryRepository categoryRepository;
     private CommentRepository commentRepository;
+    private FileStorageService fileStorageService;
 
     @Autowired
-    public QuestionService(QuestionRepository questionRepository, UserRepository userRepository, CategoryRepository categoryRepository, CommentRepository commentRepository) {
+    public QuestionService(QuestionRepository questionRepository, UserRepository userRepository, CategoryRepository categoryRepository, CommentRepository commentRepository, FileStorageService fileStorageService) {
         this.questionRepository = questionRepository;
         this.userRepository = userRepository;
         this.categoryRepository = categoryRepository;
         this.commentRepository = commentRepository;
+        this.fileStorageService = fileStorageService;
     }
 
-    public QuestionResponse createQuestion(Question question, String categoryId, String userId) {
+    public QuestionResponse createQuestion(Question question, String categoryId, MultipartFile[] files, String userId) {
         User user = userRepository.findById(userId).orElse(null);
         if (user == null) {
             throw new GenericException("User not found", HttpStatus.NOT_FOUND);
         }
+
         Category category = categoryRepository.findById(categoryId).orElse(null);
         if (category == null) {
             throw new GenericException("Category not found", HttpStatus.NOT_FOUND);
         }
+
+        List<String> filenames = fileStorageService.storeMultiple(files);
+
+        question.setStringFromArray(filenames);
         question.setOwner(user);
         question.setCategory(category);
+
         return QuestionResponse.transformFromEntity(questionRepository.save(question));
     }
 

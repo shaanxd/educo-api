@@ -27,9 +27,10 @@ public class QuestionResponse {
     private long numberOfComments = 0;
     private long total = 0;
     private long current = 0;
+    private List<String> images = new ArrayList<>();
     private List<CommentResponse> comments = new ArrayList<>();
 
-    private QuestionResponse(String id, String title, String description, Date createdAt, Date updatedAt, OwnerResponse owner, CategoryResponse category, long numberOfComments) {
+    private QuestionResponse(String id, String title, String description, Date createdAt, Date updatedAt, OwnerResponse owner, CategoryResponse category, long numberOfComments, List<String> images) {
         this.id = id;
         this.title = title;
         this.description = description;
@@ -38,6 +39,7 @@ public class QuestionResponse {
         this.owner = owner;
         this.category = category;
         this.numberOfComments = numberOfComments;
+        this.images = images;
     }
 
     public static QuestionResponse transformFromEntity(Question question) {
@@ -52,7 +54,8 @@ public class QuestionResponse {
                 question.getUpdatedAt(),
                 questionOwner,
                 questionCategory,
-                question.getNumberOfComments()
+                question.getNumberOfComments(),
+                question.getArrayFromString()
         );
     }
 

@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 
@@ -32,11 +33,11 @@ public class QuestionController {
     }
 
     @PostMapping(QUESTION_ADD_QUESTION)
-    public ResponseEntity<?> createQuestion(@Valid @RequestBody QuestionRequest questionRequest, BindingResult result, Authentication auth) {
+    public ResponseEntity<?> createQuestion(@Valid QuestionRequest questionRequest, @RequestPart("files") MultipartFile[] files, BindingResult result, Authentication auth) {
         if (result.hasErrors()) {
             return validationService.validate(result);
         }
-        QuestionResponse question = questionService.createQuestion(questionRequest.transformToEntity(), questionRequest.getCategoryId(), auth.getName());
+        QuestionResponse question = questionService.createQuestion(questionRequest.transformToEntity(), questionRequest.getCategoryId(), files, auth.getName());
         return ResponseEntity.ok(question);
     }
 
