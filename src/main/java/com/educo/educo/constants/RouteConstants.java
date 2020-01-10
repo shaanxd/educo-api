@@ -19,6 +19,7 @@ public class RouteConstants {
     public static final String QUESTION_ROOT = "/api/questions";
     public static final String QUESTION_ADD_QUESTION = "/create-question";
     public static final String QUESTION_GET_QUESTION = "/question/{id}";
+    public static final String QUESTION_GET_IMAGE = "/image/{filename}";
     public static final String QUESTION_GET = "";
 
     public static final String QUESTION_GET_BY_CATEGORY = "/by-category/{id}";

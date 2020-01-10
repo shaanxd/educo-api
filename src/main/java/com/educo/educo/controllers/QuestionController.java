@@ -3,6 +3,7 @@ package com.educo.educo.controllers;
 import com.educo.educo.DTO.Request.QuestionRequest;
 import com.educo.educo.DTO.Response.QuestionListResponse;
 import com.educo.educo.DTO.Response.QuestionResponse;
+import com.educo.educo.services.FileStorageService;
 import com.educo.educo.services.QuestionService;
 import com.educo.educo.services.ValidationService;
 import com.educo.educo.utils.CheckUserAuth;
@@ -14,6 +15,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import static com.educo.educo.constants.RouteConstants.*;
@@ -24,12 +26,14 @@ public class QuestionController {
     private QuestionService questionService;
     private ValidationService validationService;
     private CheckUserAuth checkUserAuth;
+    private FileStorageService fileStorageService;
 
     @Autowired
-    public QuestionController(QuestionService questionService, ValidationService validationService, CheckUserAuth checkUserAuth) {
+    public QuestionController(QuestionService questionService, ValidationService validationService, CheckUserAuth checkUserAuth, FileStorageService fileStorageService) {
         this.questionService = questionService;
         this.validationService = validationService;
         this.checkUserAuth = checkUserAuth;
+        this.fileStorageService = fileStorageService;
     }
 
     @PostMapping(QUESTION_ADD_QUESTION)
@@ -57,5 +61,10 @@ public class QuestionController {
     public ResponseEntity<?> getQuestions(Pageable pageable) {
         QuestionListResponse questions = questionService.getQuestions(pageable);
         return ResponseEntity.ok(questions);
+    }
+
+    @GetMapping(QUESTION_GET_IMAGE)
+    public ResponseEntity<?> getImage(@PathVariable String filename, HttpServletRequest request) {
+        return fileStorageService.getImage(filename, request);
     }
 }
