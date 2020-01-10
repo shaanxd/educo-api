@@ -29,7 +29,7 @@ public class Question {
 
     private String description;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "question")
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "question")
     private List<Comment> comments = new ArrayList<>();
 
     @Formula("(SELECT COUNT(*) FROM Comment i WHERE id = i.question_id)")

@@ -46,16 +46,16 @@ public class User implements UserDetails {
     private String confirmPassword;
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "owner")
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "owner")
     private List<Question> questions = new ArrayList<>();
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "owner")
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "owner")
     @Fetch(value = FetchMode.SUBSELECT)
     private List<Comment> comments = new ArrayList<>();
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "owner")
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "owner")
     @Fetch(value = FetchMode.SUBSELECT)
     private List<Vote> votes = new ArrayList<>();
 

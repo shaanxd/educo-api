@@ -28,7 +28,7 @@ public class Comment {
     @NotBlank(message = "Comment is required.")
     private String comment;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "question_id")
     @JsonIgnore
     private Question question;
@@ -36,7 +36,7 @@ public class Comment {
     @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL)
     private List<Comment> children = new ArrayList<>();
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(referencedColumnName = "id")
     @JsonIgnore
     private Comment parent;

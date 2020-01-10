@@ -32,7 +32,7 @@ public class Category {
     @NotBlank(message = "Category description is required.")
     private String description;
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "category", cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "category", cascade = CascadeType.ALL)
     @JsonIgnore
     private List<Question> questions = new ArrayList<>();
 

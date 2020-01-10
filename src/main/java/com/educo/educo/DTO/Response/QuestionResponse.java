@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Getter
@@ -19,6 +20,8 @@ public class QuestionResponse {
     private String id;
     private String title;
     private String description;
+    private Date createdAt;
+    private Date updatedAt;
     private OwnerResponse owner;
     private CategoryResponse category;
     private long numberOfComments = 0;
@@ -26,10 +29,12 @@ public class QuestionResponse {
     private long current = 0;
     private List<CommentResponse> comments = new ArrayList<>();
 
-    private QuestionResponse(String id, String title, String description, OwnerResponse owner, CategoryResponse category, long numberOfComments) {
+    private QuestionResponse(String id, String title, String description, Date createdAt, Date updatedAt, OwnerResponse owner, CategoryResponse category, long numberOfComments) {
         this.id = id;
         this.title = title;
         this.description = description;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
         this.owner = owner;
         this.category = category;
         this.numberOfComments = numberOfComments;
@@ -43,6 +48,8 @@ public class QuestionResponse {
                 question.getId(),
                 question.getTitle(),
                 question.getDescription(),
+                question.getCreatedAt(),
+                question.getUpdatedAt(),
                 questionOwner,
                 questionCategory,
                 question.getNumberOfComments()

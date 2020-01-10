@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Getter
@@ -18,6 +19,8 @@ import java.util.List;
 public class CommentResponse {
     private String id;
     private String comment;
+    private Date createdAt;
+    private Date updatedAt;
     private long votes;
     private String voteType;
     private long childCount;
@@ -48,8 +51,15 @@ public class CommentResponse {
         }
         long voteCount = comment.getPositive() - comment.getNegative();
         return new CommentResponse(
-                comment.getId(), comment.getComment(), voteCount,
-                voteType, comment.getChildCount(), owner, children
+                comment.getId(),
+                comment.getComment(),
+                comment.getCreatedAt(),
+                comment.getUpdatedAt(),
+                voteCount,
+                voteType,
+                comment.getChildCount(),
+                owner,
+                children
         );
     }
 
